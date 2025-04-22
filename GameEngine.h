@@ -1,4 +1,4 @@
-#pragma once
+п»ї#pragma once
 #include <iostream>
 #include <vector>
 #include <ctime>
@@ -8,45 +8,45 @@
 #include <SFML/System.hpp>
 #include <SFML/Window/Event.hpp>
 
-//Ну это типо движка
+//РќСѓ СЌС‚Рѕ С‚РёРїРѕ РґРІРёР¶РєР°
 
 class GameEngine
 {
 private:
-	//Переменные
-	//Окошко
+	//РџРµСЂРµРјРµРЅРЅС‹Рµ
+	//РћРєРѕС€РєРѕ
 	sf::RenderWindow* MainGame;
 	sf::VideoMode videomode;
 
-	//Игровые объекты
+	//РРіСЂРѕРІС‹Рµ РѕР±СЉРµРєС‚С‹
 	sf::RectangleShape enemy;
 	std::vector<sf::RectangleShape> enemies;
 
-	//ИГРОВАЯ ЛОГИКА (ода бейби)
+	//РР“Р РћР’РђРЇ Р›РћР“РРљРђ (РѕРґР° Р±РµР№Р±Рё)
 	int points;
 	float enemySpawnTimer;
 	float enemySpawnTimerMax;
 	int maxEnemies;
 
-	//Позиции мышки
+	//РџРѕР·РёС†РёРё РјС‹С€РєРё
 	sf::Vector2i mousePosWindow;
 
 
-	//Приватные функции
+	//РџСЂРёРІР°С‚РЅС‹Рµ С„СѓРЅРєС†РёРё
 	void initVars();
 	void initWindow();
 	void initEnemies();
 public:
-	// Конструкторы и деконструкторы
+	// РљРѕРЅСЃС‚СЂСѓРєС‚РѕСЂС‹ Рё РґРµРєРѕРЅСЃС‚СЂСѓРєС‚РѕСЂС‹
 
 	GameEngine();
 	virtual ~GameEngine();
 
-	// Accessors (хз че это, позже разберусь)
+	// Accessors (С…Р· С‡Рµ СЌС‚Рѕ, РїРѕР·Р¶Рµ СЂР°Р·Р±РµСЂСѓСЃСЊ)
 	const bool running() const;
 
 
-	//Функции
+	//Р¤СѓРЅРєС†РёРё
 	void spawnEnemy();
 	void pollEvents();
 	void update();

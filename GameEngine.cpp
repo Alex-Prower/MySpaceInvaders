@@ -1,11 +1,11 @@
-#include "GameEngine.h"
+ï»¿#include "GameEngine.h"
 
-//Ïðèâàòíûå ôóíêöèè
+//ÐŸÑ€Ð¸Ð²Ð°Ñ‚Ð½Ñ‹Ðµ Ñ„ÑƒÐ½ÐºÑ†Ð¸Ð¸
 void GameEngine::initVars()
 {
     this->MainGame = nullptr;
 
-    // ÈÃÐÎÂÀß ËÎÃÈÊÀ
+    // Ð˜Ð“Ð ÐžÐ’ÐÐ¯ Ð›ÐžÐ“Ð˜ÐšÐ
     this->points = 0;
     this->enemySpawnTimerMax = 1000.f;
     this->enemySpawnTimer = this->enemySpawnTimer;
@@ -29,7 +29,7 @@ void GameEngine::initEnemies()
     this->enemy.setOutlineThickness(1.f);
 }
 
-//Êîíñòðóêòîð è äåêîíñòðóêòîð
+//ÐšÐ¾Ð½ÑÑ‚Ñ€ÑƒÐºÑ‚Ð¾Ñ€ Ð¸ Ð´ÐµÐºÐ¾Ð½ÑÑ‚Ñ€ÑƒÐºÑ‚Ð¾Ñ€
 GameEngine::GameEngine() {
     this->initVars();
     this->initWindow();
@@ -40,7 +40,7 @@ GameEngine::~GameEngine() {
     delete this->MainGame;
 }
 
-//Àêñåññîð
+//ÐÐºÑÐµÑÑÐ¾Ñ€
 const bool GameEngine::running() const
 {
     return this->MainGame->isOpen();
@@ -48,15 +48,15 @@ const bool GameEngine::running() const
 
 
 
-//Ôóíêöèè
+//Ð¤ÑƒÐ½ÐºÑ†Ð¸Ð¸
 
 void GameEngine::spawnEnemy()
 {
     /* @return void
-    * Ñïàâíèò âðàãîâ è óñòàíàâëèâàåò öâåò ñ ïîçèöèÿìè
-    * - ñòàâèò ðàíäîìíóþ ïîçèöèþ (ó ìåíÿ ïîòîì áóäåò ÍÅ ðàíäîìíàÿ??)
-    * - ñòàâèò ðàíäîìíûé öâåò
-    * - äîáàâëÿåò â âåêòîð âðàãà
+    * Ð¡Ð¿Ð°Ð²Ð½Ð¸Ñ‚ Ð²Ñ€Ð°Ð³Ð¾Ð² Ð¸ ÑƒÑÑ‚Ð°Ð½Ð°Ð²Ð»Ð¸Ð²Ð°ÐµÑ‚ Ñ†Ð²ÐµÑ‚ Ñ Ð¿Ð¾Ð·Ð¸Ñ†Ð¸ÑÐ¼Ð¸
+    * - ÑÑ‚Ð°Ð²Ð¸Ñ‚ Ñ€Ð°Ð½Ð´Ð¾Ð¼Ð½ÑƒÑŽ Ð¿Ð¾Ð·Ð¸Ñ†Ð¸ÑŽ (Ñƒ Ð¼ÐµÐ½Ñ Ð¿Ð¾Ñ‚Ð¾Ð¼ Ð±ÑƒÐ´ÐµÑ‚ ÐÐ• Ñ€Ð°Ð½Ð´Ð¾Ð¼Ð½Ð°Ñ??)
+    * - ÑÑ‚Ð°Ð²Ð¸Ñ‚ Ñ€Ð°Ð½Ð´Ð¾Ð¼Ð½Ñ‹Ð¹ Ñ†Ð²ÐµÑ‚
+    * - Ð´Ð¾Ð±Ð°Ð²Ð»ÑÐµÑ‚ Ð² Ð²ÐµÐºÑ‚Ð¾Ñ€ Ð²Ñ€Ð°Ð³Ð°
     */
 
     this->enemy.setPosition(
@@ -87,7 +87,7 @@ void GameEngine::pollEvents()
 }
 
 
-//Ôóíêöèè
+//Ð¤ÑƒÐ½ÐºÑ†Ð¸Ð¸
 
 void GameEngine::updateMousePositions()
 {
@@ -104,10 +104,10 @@ void GameEngine::update() {
 
 void GameEngine::updateEnemies()
 {
-    //Òàéìåð ïî ñïàâíó âðàãîâ (ñíåñ¸òñÿ ïîçæå, êîãäà ÿ ïðîéäó òóòîðèàë ñ þòàáà, ïîòîìó ÷ò íàôèã íåíóæîí
+    //Ð¢Ð°Ð¹Ð¼ÐµÑ€ Ð¿Ð¾ ÑÐ¿Ð°Ð²Ð½Ñƒ Ð²Ñ€Ð°Ð³Ð¾Ð² (ÑÐ½ÐµÑÑ‘Ñ‚ÑÑ Ð¿Ð¾Ð·Ð¶Ðµ, ÐºÐ¾Ð³Ð´Ð° Ñ Ð¿Ñ€Ð¾Ð¹Ð´Ñƒ Ñ‚ÑƒÑ‚Ð¾Ñ€Ð¸Ð°Ð» Ñ ÑŽÑ‚Ð°Ð±Ð°, Ð¿Ð¾Ñ‚Ð¾Ð¼Ñƒ Ñ‡Ñ‚ Ð½Ð°Ñ„Ð¸Ð³ Ð½ÐµÐ½ÑƒÐ¶Ð¾Ð½
     if (this->enemies.size() < this->maxEnemies) {
         if (this->enemySpawnTimer >= this->enemySpawnTimerMax) {
-            //ñïàâí ïåðñà + ñáðîñ òàéìåðà
+            //ÑÐ¿Ð°Ð²Ð½ Ð¿ÐµÑ€ÑÐ° + ÑÐ±Ñ€Ð¾Ñ Ñ‚Ð°Ð¹Ð¼ÐµÑ€Ð°
             this->spawnEnemy();
             this->enemySpawnTimer = 0.f;
         }
@@ -124,7 +124,7 @@ void GameEngine::renderEnemies()
 
 void GameEngine::render() {
     this->MainGame->clear();
-    //îáúåêòû
+    //Ð¾Ð±ÑŠÐµÐºÑ‚Ñ‹
     this->renderEnemies();
     this->MainGame->draw(this->enemy);
     this->MainGame->display();
