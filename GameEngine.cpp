@@ -6,10 +6,9 @@ void GameEngine::initVars()
     this->MainGame = nullptr;
 
     // ИГРОВАЯ ЛОГИКА
-    //хдхдхдхдх
     this->points = 0;
-    this->enemySpawnTimerMax = 1000.f;
-    this->enemySpawnTimer = this->enemySpawnTimer;
+    this->enemySpawnTimerMax = 500.f;
+    this->enemySpawnTimer = this->enemySpawnTimerMax;
     this->maxEnemies = 5;
 }
 
@@ -60,15 +59,17 @@ void GameEngine::spawnEnemy()
     * - добавляет в вектор врага
     */
 
-    this->enemy.setPosition(
-        sf::Vector2f(
+    this->enemy.setPosition({
             static_cast<float>(rand() % static_cast<int>(this->MainGame->getSize().x - this->enemy.getSize().x)),
-            static_cast<float>(rand() % static_cast<int>(this->MainGame->getSize().y - this->enemy.getSize().y))
-        )
-    );
+            0.f
+        });
 
+    this->enemy.setFillColor(sf::Color::Green);
+    this->enemy.setOutlineColor(sf::Color::Red);
+    this->enemy.setOutlineThickness(5.f);
 
-
+    //Спавн врага
+    this->enemies.push_back(this->enemy);
 }
 
 void GameEngine::pollEvents()
@@ -115,11 +116,21 @@ void GameEngine::updateEnemies()
         else
             this->enemySpawnTimer += 1.f;
     }
+
+    for (auto &e : this->enemies)
+    {
+        e.move({ 0.f, 2.f });
+        e.move({ 2.f, 0.f });
+    }
 }
 
 void GameEngine::renderEnemies()
 {
-
+    //рендер врагов
+    for (auto& e : this->enemies)
+    {
+        this->MainGame->draw(e);
+    }
 }
 
 
@@ -127,7 +138,6 @@ void GameEngine::render() {
     this->MainGame->clear();
     //объекты
     this->renderEnemies();
-    this->MainGame->draw(this->enemy);
     this->MainGame->display();
 }
 
