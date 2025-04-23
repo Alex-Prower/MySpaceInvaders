@@ -6,6 +6,7 @@ void GameEngine::initVars()
     this->MainGame = nullptr;
 
     // ИГРОВАЯ ЛОГИКА
+    //хдхдхдхдх
     this->points = 0;
     this->enemySpawnTimerMax = 1000.f;
     this->enemySpawnTimer = this->enemySpawnTimer;
