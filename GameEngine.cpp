@@ -4,12 +4,12 @@
 void GameEngine::initVars()
 {
     this->MainGame = nullptr;
-
-    // ИГРОВАЯ ЛОГИКА
+    this->texture.loadFromFile("texture.png");    // ИГРОВАЯ ЛОГИКА
     this->points = 0;
-    this->enemySpawnTimerMax = 500.f;
+    this->Left0Right1 = 0;
+    this->enemySpawnTimerMax = 5.f;
     this->enemySpawnTimer = this->enemySpawnTimerMax;
-    this->maxEnemies = 5;
+    this->maxEnemies = 1;
 }
 
 void GameEngine::initWindow()
@@ -61,9 +61,7 @@ void GameEngine::spawnEnemy()
 
     this->enemy.setPosition({
             static_cast<float>(rand() % static_cast<int>(this->MainGame->getSize().x - this->enemy.getSize().x)),
-            0.f
-        });
-
+            0.f });
     this->enemy.setFillColor(sf::Color::Green);
     this->enemy.setOutlineColor(sf::Color::Red);
     this->enemy.setOutlineThickness(5.f);
@@ -119,8 +117,17 @@ void GameEngine::updateEnemies()
 
     for (auto &e : this->enemies)
     {
-        e.move({ 0.f, 2.f });
-        e.move({ 2.f, 0.f });
+        //Коллизия
+        //Право
+        if (this->Left0Right1 == 0) {
+            e.move({ -2.f, 0.f });
+            if (e.getPosition().x < 0.f) this->Left0Right1 = 1;
+        }
+        if (this->Left0Right1 == 1) {
+            e.move({ 2.f, 0.f });
+            if ((e.getPosition().x + 50) > 640.f) this->Left0Right1 = 0;
+        }
+        //Вверх
     }
 }
 

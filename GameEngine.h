@@ -17,6 +17,8 @@ private:
 	//Окошко
 	sf::RenderWindow* MainGame;
 	sf::VideoMode videomode;
+	sf::Texture texture;
+	sf::Sprite* sprite;
 
 	//Игровые объекты
 	sf::RectangleShape enemy;
@@ -26,7 +28,10 @@ private:
 	int points;
 	float enemySpawnTimer;
 	float enemySpawnTimerMax;
+	float TimerMove1;
+	float TimerMove2;
 	int maxEnemies;
+	bool Left0Right1;
 
 	//Позиции мышки
 	sf::Vector2i mousePosWindow;
