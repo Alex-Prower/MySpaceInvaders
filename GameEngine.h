@@ -17,21 +17,20 @@ private:
 	//Окошко
 	sf::RenderWindow* MainGame;
 	sf::VideoMode videomode;
-	sf::Texture texture;
-	sf::Sprite* sprite;
 
 	//Игровые объекты
-	sf::RectangleShape enemy;
-	std::vector<sf::RectangleShape> enemies;
+	//sf::RectangleShape enemy;
+	sf::Texture alienTexture;
+	sf::Sprite* enemy;
+	std::vector<sf::Sprite> enemies;
 
 	//ИГРОВАЯ ЛОГИКА (ода бейби)
 	int points;
-	float enemySpawnTimer;
-	float enemySpawnTimerMax;
-	float TimerMove1;
-	float TimerMove2;
-	int maxEnemies;
+	int dist;
 	bool Left0Right1;
+	bool enemiesSpawned;
+	float enemySpeed;
+
 
 	//Позиции мышки
 	sf::Vector2i mousePosWindow;
