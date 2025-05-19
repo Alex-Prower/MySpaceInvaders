@@ -24,6 +24,9 @@ private:
 	sf::Sprite* enemy;
 	std::vector<sf::Sprite> enemies;
 
+	sf::Texture playerTexture;
+	sf::Sprite* player;
+
 	//ИГРОВАЯ ЛОГИКА (ода бейби)
 	int points;
 	int dist;
@@ -40,6 +43,7 @@ private:
 	void initVars();
 	void initWindow();
 	void initEnemies();
+	void initPlayer();
 public:
 	// Конструкторы и деконструкторы
 
@@ -55,6 +59,7 @@ public:
 	void pollEvents();
 	void update();
 	void updateEnemies();
+	void updatePlayer();
 	void renderEnemies();
 	void updateMousePositions();
 	void render();

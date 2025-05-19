@@ -4,18 +4,22 @@
 void GameEngine::initVars()
 {
     this->MainGame = nullptr;   // ИГРОВАЯ ЛОГИКА
-    this->enemySpeed = 2.f; //если надо чекнуть место спрайтов, пиши 0
+    this->enemySpeed = 1.f; //если надо чекнуть место спрайтов, пиши 0
     this->points = 0;
     this->Left0Right1 = 1;
+
     this->alienTexture.loadFromFile("invader.png");
+    this->playerTexture.loadFromFile("ship.png");
     this->enemy = new sf::Sprite(alienTexture);
+    this->player = new sf::Sprite(playerTexture);
+
     this->enemiesSpawned = false;
 }
 
 void GameEngine::initWindow()
 {
     this->videomode.size = { 640, 640 };
-    this->MainGame = new sf::RenderWindow(this->videomode, "My windowwwww", sf::Style::Close);
+    this->MainGame = new sf::RenderWindow(this->videomode, "Space Invaders", sf::Style::Close);
     this->MainGame->setFramerateLimit(30);
 }
 
@@ -25,11 +29,17 @@ void GameEngine::initEnemies()
     this->enemy->setScale({ 5.f, 5.f });
 }
 
+void GameEngine::initPlayer() {
+    this->player->setPosition({ 280, 600.f });
+    this->player->setScale({ 5.f, 5.f });
+}
+
 //Конструктор и деконструктор
 GameEngine::GameEngine() {
     this->initVars();
     this->initWindow();
     this->initEnemies();
+    this->initPlayer();
 }
 
 GameEngine::~GameEngine() {
@@ -58,16 +68,19 @@ void GameEngine::spawnEnemy()
     if (enemiesSpawned == false) {
         for (int i{ 1 }; i < 10; i++) {
             int dist = 75; //расстояние между врагами
-            if (i <= 5) {
+            if (i <= 7) {
                 this->enemy->setPosition({ static_cast<float>(dist * i) - 10, 30.f });
                 this->enemies.push_back(*enemy);
-                this->enemy->setPosition({ static_cast<float>(dist * i) + 10, 80.f });
+                this->enemy->setPosition({ static_cast<float>(dist * i) - 30, 80.f });
+                this->enemies.push_back(*enemy);
+                this->enemy->setPosition({ static_cast<float>(dist * i) - 10, 130.f });
                 this->enemies.push_back(*enemy);
             }
         }
     }
     enemiesSpawned = true;
 }
+
 
 void GameEngine::pollEvents()
 {
@@ -99,6 +112,7 @@ void GameEngine::update() {
     this->updateMousePositions();
 
     this->updateEnemies();
+    this->updatePlayer();
 }
 
 void GameEngine::updateEnemies()
@@ -122,6 +136,21 @@ void GameEngine::updateEnemies()
     
 }
 
+void GameEngine::updatePlayer()
+{
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::A))
+        player->move({ -4.f, 0.f });
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::D))
+        player->move({ 4.f, 0.f });
+
+    if (player->getPosition().x <= 0.f) {
+        player->setPosition({ 0.f, 600.f });
+    }
+    else if (player->getPosition().x + player->getGlobalBounds().size.x >= 640.f) {
+        player->setPosition({640.f - player->getGlobalBounds().size.x, 600.f});
+    }
+}
+
 void GameEngine::renderEnemies()
 {
     //рендер врагов
@@ -136,15 +165,6 @@ void GameEngine::render() {
     this->MainGame->clear();
     //объекты
     this->renderEnemies();
+    this->MainGame->draw(*player);
     this->MainGame->display();
 }
-
-/*sf::RectangleShape player({ 50, 50 });
-  this->player.setFillColor(sf::Color::Green);
-  this->player.setPosition({ 300, 300 });
-
-  sf::RectangleShape bullet({ 10,30 });
-  this->bullet.setFillColor(sf::Color::Red);
-
-  this->MainGame->draw(player);
-  this->MainGame->draw(bullet);*/
