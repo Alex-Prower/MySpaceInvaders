@@ -1,4 +1,5 @@
 ﻿#include "GameEngine.h"
+#include "Enemy.h"
 
 //Приватные функции
 void GameEngine::initVars()
@@ -7,24 +8,17 @@ void GameEngine::initVars()
     this->enemySpeed = 1.f; //если надо чекнуть место спрайтов, пиши 0
     this->points = 0;
     this->Left0Right1 = 1;
-    this->alienDeadID = 0;
-    this->choosedAlien = NULL;
     this->timerAnimationAlienDeath = sf::seconds(0.5f);
     
-
-
-    this->alienTexture.loadFromFile("invader.png");
-    this->alienDiedTexture.loadFromFile("invaderdeath.png");
-    this->alienShootTexture.loadFromFile("invadershoot.png");
     this->playerTexture.loadFromFile("ship.png");
     this->playerDeadTexture.loadFromFile("death.png");
-
-    this->enemy = new sf::Sprite(alienTexture);
+    this->invaderTexture.loadFromFile("invader.png");
+    this->invaderDiedTexture.loadFromFile("invaderdeath.png");
+    this->invaderShootTexture.loadFromFile("invadershoot.png");
     this->player = new sf::Sprite(playerTexture);
 
     this->enemiesSpawned = false;
     this->bulletInAir = false;
-    this->animationAlienDeath = false;
     this->isPlayerDead = false;
 }
 
@@ -33,15 +27,6 @@ void GameEngine::initWindow()
     this->videomode.size = { 640, 640 };
     this->MainGame = new sf::RenderWindow(this->videomode, "Space Invaders", sf::Style::Close);
     this->MainGame->setFramerateLimit(30);
-}
-
-void GameEngine::initEnemies()
-{
-    this->enemy->setPosition(sf::Vector2f(50.f, 10.f));
-    this->enemy->setScale({ 5.f, 5.f });
-
-    this->enemyBullet.setSize({ 5.f, 30.f });
-    this->enemyBullet.setFillColor(sf::Color::Red);
 }
 
 void GameEngine::initPlayer() {
@@ -55,12 +40,11 @@ void GameEngine::initPlayer() {
 
 //Конструктор и деконструктор
 GameEngine::GameEngine()
-    : gen(std::random_device{}()) // ← инициализация генератора
 {
     this->initVars();
     this->initWindow();
-    this->initEnemies();
     this->initPlayer();
+    
 }
     
 GameEngine::~GameEngine() {
@@ -80,34 +64,25 @@ const bool GameEngine::running() const
 void GameEngine::spawnEnemy()
 {
     /* @return void
-    * Спавнит врагов и устанавливает цвет с позициями
-    * - ставит рандомную позицию (у меня потом будет НЕ рандомная??)
-    * - ставит рандомный цвет
     * - добавляет в вектор врага
     */
     //Спавн врага
-    if (enemiesSpawned == false) {
-        for (int i{ 1 }; i < 10; i++) {
-            int dist = 75; //расстояние между врагами
+    if (!enemiesSpawned) {
+        const int dist = 75;
+        for (int i = 1; i < 10; i++) {
             if (i <= 7) {
-                this->enemy->setPosition({ static_cast<float>(dist * i) - 10, 30.f });
-                this->enemies.push_back(*enemy);
-                this->enemy->setPosition({ static_cast<float>(dist * i) - 30, 80.f });
-                this->enemies.push_back(*enemy);
-                this->enemy->setPosition({ static_cast<float>(dist * i) - 10, 130.f });
-                this->enemies.push_back(*enemy);
-                this->enemy->setPosition({ static_cast<float>(dist * i) - 30, 180.f });
-                this->enemies.push_back(*enemy);
+                for (float y : {30.f, 130.f}) {
+                    enemies.emplace_back(invaderTexture, invaderDiedTexture, invaderShootTexture); // создаём
+                    enemies.back().spawn((dist * i) - ((int)y % 2 ? 10 : 30), y); // настраиваем
+                }
+                for (float y : {80.f, 180.f}) {
+                    enemies.emplace_back(invaderTexture, invaderDiedTexture, invaderShootTexture); // создаём
+                    enemies.back().spawn((dist * i) - ((int)y % 2 ? 10 : 5), y); // настраиваем
+                }
             }
         }
+        enemiesSpawned = true;
     }
-    enemiesSpawned = true;
-}
-
-void GameEngine::spawnEnemyBullet(int index)
-{
-    enemyBullet.setPosition({ enemies[index].getPosition().x+20, enemies[index].getPosition().y});
-    bullets.push_back(enemyBullet);
 }
 
 void GameEngine::spawnPlayerBullet()
@@ -137,50 +112,35 @@ void GameEngine::pollEvents()
 
 
 //Функции
-
-void GameEngine::updateMousePositions()
-{
-    this->mousePosWindow = sf::Mouse::getPosition(*this->MainGame);
-}
-
 void GameEngine::updateEnemies()
 {
     this->spawnEnemy();
-    for (auto &e : this->enemies)
-    {
-        std::uniform_int_distribution<> rangeRandBullet(1, 2);
-        if (alienShoot.getElapsedTime().asSeconds() > rangeRandBullet(gen)) {
-
-
-            std::uniform_int_distribution<> dist(0, enemies.size() - 1);
-            int choosedAlien = (dist(gen));  // СПАВН ПУЛИ РАНДОМНОМУ ВРАГУ
-            spawnEnemyBullet(choosedAlien); 
-
-            enemies[choosedAlien].setTexture(alienShootTexture);
-            alienAnimation.restart();
-            std::cout << "Выбранный чел:" << choosedAlien << "\n";
-            alienShoot.restart();
-            
-
-        }
-        if (alienAnimation.getElapsedTime().asSeconds() > 0.5) {
-            enemies[choosedAlien].setTexture(alienTexture);
-            alienAnimation.reset();
-        }
-        if (e.getPosition().x <= 0.f) {
-            this->Left0Right1 = 1;
-            break;
-        }
-        else if (e.getPosition().x + e.getGlobalBounds().size.x >= 640.f) {
-            this->Left0Right1 = 0;
+  
+    for (auto& e : enemies) {
+        if (e.checkCollision()) {
+            needToChangeDirection = true;
             break;
         }
     }
-    float direction = (this->Left0Right1 == 1) ? 1.f : -1.f;
-    for (auto& e : this->enemies) {
-        e.move({ direction * 2.f * this->enemySpeed, 0.f });
+
+    if (needToChangeDirection) {
+        for (auto& e : enemies) {
+            e.changeDirection();
+        }
+        needToChangeDirection = false;
     }
-    
+
+    for (auto& e : enemies) {
+        e.update(playerBullet);
+    }
+
+    this->enemies.erase(
+        std::remove_if(this->enemies.begin(), this->enemies.end(),
+            [](const Enemy& e) {
+                return e.getState() == EnemyState::Dead;
+            }),
+        this->enemies.end()
+    );
 }
 
 void GameEngine::updatePlayer()
@@ -201,44 +161,24 @@ void GameEngine::updatePlayer()
     else if (player->getPosition().x + player->getGlobalBounds().size.x >= 640.f) {
         player->setPosition({640.f - player->getGlobalBounds().size.x, 600.f});
     }
+
+    for (auto& e : enemies) {
+        if (isPlayerDead) break; 
+        else for (auto& k : e.getBullets()) {
+            if (k.getBounds().getGlobalBounds().findIntersection(player->getGlobalBounds())) {
+                player->setTexture(playerDeadTexture);
+                isPlayerDead = true;
+          }
+
+        }
+    }
 }
 
 void GameEngine::updateBullets()
 {
-    //ПУЛЯ ВРАГА
-    for (auto it = bullets.begin(); it != bullets.end(); ) {
-        it->move({ 0.f, 10.f });
-  
-        if (it->getGlobalBounds().size.y < 0.f)
-            bullets.erase(it);
-        if (it->getGlobalBounds().findIntersection(player->getGlobalBounds())) {
-            player->setTexture(playerDeadTexture);
-            isPlayerDead = true;
-        }
-
-        else {
-            ++it;
-        }
-    }
-
     //ПУЛЯ ИГРОКА
     if (bulletInAir) {
         playerBullet.move({ 0.f, -15.f }); // вверх по экрану
-        for (size_t i = 0; i < enemies.size(); ) {
-            if (playerBullet.getGlobalBounds().findIntersection(enemies[i].getGlobalBounds())) {
-                std::cout << "есть пробитие \n";
-                playerBullet.setPosition({ -100.f, -100.f });// убираем за экран пуд.
-                enemies[i].setTexture(alienDiedTexture);
-                clockAlien.restart();
-                alienDeadID = i;
-                animationAlienDeath = true;
-            }
-            else {
-                ++i;
-            }
-        }
-
-
         if (playerBullet.getPosition().y < -60.f) {
             bulletInAir = false;
             playerBullet.setPosition({ -100.f, -100.f }); // убираем за экран
@@ -246,28 +186,12 @@ void GameEngine::updateBullets()
     }
 }
 
-void GameEngine::updateAnimation()
-{
-    if (animationAlienDeath) {
-        if (clockAlien.getElapsedTime().asSeconds() > timerAnimationAlienDeath.asSeconds()) {
-            enemies.erase(enemies.begin() + alienDeadID); // удалить по индексу
-            animationAlienDeath = false;
-        }
-    }
-  
-}
-
 void GameEngine::renderEnemies()
 {
     //рендер врагов
     for (auto& e : this->enemies)
     {
-        this->MainGame->draw(e);
-    }
-
-    for (auto& k : this->bullets)
-    {
-        this->MainGame->draw(k);
+        e.draw(*MainGame);
     }
 }
 
@@ -283,9 +207,6 @@ void GameEngine::render() {
 
 void GameEngine::update() {
     this->pollEvents();
-
-    this->updateMousePositions();
-    this->updateAnimation();
     this->updateEnemies();
     this->updatePlayer();
     this->updateBullets();
