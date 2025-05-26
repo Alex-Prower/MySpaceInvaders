@@ -13,8 +13,9 @@ void Enemy::initVars()
     this->enemyBullet.setPosition({ -100.f, -100.f });
 
     //игровая логика
-    wantToShootRangeStart = 1.f;
-    wanttoShootRangeEnd = 2.f;
+    wantToShootRangeStart = 3.f;
+    wanttoShootRangeEnd = 10.f;
+    shootTime = wantToShootRangeStart + static_cast<float>(rand()) / RAND_MAX * (wanttoShootRangeEnd - wantToShootRangeStart);
     enemySpeed = 1.f;
     Left0Right1 = 1;
     state = EnemyState::Alive;
@@ -36,9 +37,8 @@ const std::vector<Bullet>& Enemy::getBullets() const {
 
 void Enemy::RandomShoot() {
     this->enemyBullet.move({ 0.f, 5.f });
-    float shootTime = wantToShootRangeStart + static_cast<float>(rand()) / RAND_MAX * (wanttoShootRangeEnd - wantToShootRangeStart);
-
     if (shootClock.getElapsedTime().asSeconds() > shootTime) {
+        float shootTime = wantToShootRangeStart + static_cast<float>(rand()) / RAND_MAX * (wanttoShootRangeEnd - wantToShootRangeStart);
         enemyBullets.emplace_back(alien->getPosition().x + 20, alien->getPosition().y);
         shootClock.restart();
     }

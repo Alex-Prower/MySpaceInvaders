@@ -8,8 +8,7 @@ void GameEngine::initVars()
     this->enemySpeed = 1.f; //если надо чекнуть место спрайтов, пиши 0
     this->points = 0;
     this->Left0Right1 = 1;
-    this->timerAnimationAlienDeath = sf::seconds(0.5f);
-    
+
     this->playerTexture.loadFromFile("ship.png");
     this->playerDeadTexture.loadFromFile("death.png");
     this->invaderTexture.loadFromFile("invader.png");

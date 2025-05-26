@@ -1,7 +1,6 @@
 ﻿#pragma once
 #include <iostream>
 #include <vector>
-#include <ctime>
 
 #include <SFML/Graphics.hpp>
 #include <SFML/Window.hpp>
@@ -18,10 +17,6 @@ private:
 	//Окошко
 	sf::RenderWindow* MainGame;
 	sf::VideoMode videomode;
-	sf::Clock clockAlien;
-	sf::Clock alienShoot;
-	sf::Clock alienAnimation;
-	sf::Time timerAnimationAlienDeath;
 
 	//Игровые объекты
 	//sf::RectangleShape enemy;
