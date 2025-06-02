@@ -4,16 +4,20 @@
 //Приватные функции
 void GameEngine::initVars()
 {
+    this->font.openFromFile("Sprites/msdos2.ttf"); // ДА, Я ЗНАЮ, ЛЕНИВО
+    this->youWon = new sf::Text(font); // менять шрифт здесь
+    this->youWon->setString("You won!!! Press ESCAPE to exit! :)");
+    this->youWon->setPosition({ 60, 150 });
     this->MainGame = nullptr;   // ИГРОВАЯ ЛОГИКА
     this->enemySpeed = 1.f; //если надо чекнуть место спрайтов, пиши 0
     this->points = 0;
     this->Left0Right1 = 1;
 
-    this->playerTexture.loadFromFile("ship.png");
-    this->playerDeadTexture.loadFromFile("death.png");
-    this->invaderTexture.loadFromFile("invader.png");
-    this->invaderDiedTexture.loadFromFile("invaderdeath.png");
-    this->invaderShootTexture.loadFromFile("invadershoot.png");
+    this->playerTexture.loadFromFile("Sprites/ship.png");
+    this->playerDeadTexture.loadFromFile("Sprites/death.png");
+    this->invaderTexture.loadFromFile("Sprites/invader.png");
+    this->invaderDiedTexture.loadFromFile("Sprites/invaderdeath.png");
+    this->invaderShootTexture.loadFromFile("Sprites/invadershoot.png");
     this->player = new sf::Sprite(playerTexture);
 
     this->enemiesSpawned = false;
@@ -150,9 +154,9 @@ void GameEngine::updatePlayer()
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::D)) // вправо
         if (!isPlayerDead)
         player->move({ 4.f, 0.f });
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::Z)) // стрелять
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::Z) || sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::Space) || sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::Enter))// стрелять
         if (!isPlayerDead)
-        spawnPlayerBullet();
+            spawnPlayerBullet();
 
     if (player->getPosition().x <= 0.f) {
         player->setPosition({ 0.f, 600.f });
@@ -198,6 +202,9 @@ void GameEngine::renderEnemies()
 void GameEngine::render() {
     this->MainGame->clear();
     //объекты
+    if (enemies.empty()) {
+        this->MainGame->draw(*youWon);
+    }
     this->renderEnemies();
     this->MainGame->draw(*player);
     this->MainGame->draw(playerBullet);
@@ -210,3 +217,4 @@ void GameEngine::update() {
     this->updatePlayer();
     this->updateBullets();
 }
+

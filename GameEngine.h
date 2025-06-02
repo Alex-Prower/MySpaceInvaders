@@ -15,11 +15,14 @@ class GameEngine
 private:
 	//Переменные
 	//Окошко
+	sf::Font font;
 	sf::RenderWindow* MainGame;
+	sf::RenderWindow* RetryMenu;
 	sf::VideoMode videomode;
 
 	//Игровые объекты
 	//sf::RectangleShape enemy;
+	sf::Text* youWon;
 	sf::Texture playerTexture;
 	sf::Texture playerDeadTexture;
 	sf::Texture invaderTexture;
