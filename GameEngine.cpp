@@ -6,8 +6,11 @@ void GameEngine::initVars()
 {
     this->font.openFromFile("Sprites/msdos2.ttf"); // ДА, Я ЗНАЮ, ЛЕНИВО
     this->youWon = new sf::Text(font); // менять шрифт здесь
+    this->youLose = new sf::Text(font);
     this->youWon->setString("You won!!! Press ESCAPE to exit! :)");
     this->youWon->setPosition({ 60, 150 });
+    this->youLose->setString("You lose! Press ESCAPE to exit!");
+    this->youLose->setPosition({ 60,300 });
     this->MainGame = nullptr;   // ИГРОВАЯ ЛОГИКА
     this->enemySpeed = 1.f; //если надо чекнуть место спрайтов, пиши 0
     this->points = 0;
@@ -118,25 +121,21 @@ void GameEngine::pollEvents()
 void GameEngine::updateEnemies()
 {
     this->spawnEnemy();
-  
     for (auto& e : enemies) {
         if (e.checkCollision()) {
             needToChangeDirection = true;
             break;
         }
     }
-
     if (needToChangeDirection) {
         for (auto& e : enemies) {
             e.changeDirection();
         }
         needToChangeDirection = false;
     }
-
     for (auto& e : enemies) {
         e.update(playerBullet);
     }
-
     this->enemies.erase(
         std::remove_if(this->enemies.begin(), this->enemies.end(),
             [](const Enemy& e) {
@@ -148,15 +147,14 @@ void GameEngine::updateEnemies()
 
 void GameEngine::updatePlayer()
 {
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::A)) // влево
-        if (!isPlayerDead)
-        player->move({ -4.f, 0.f });
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::D)) // вправо
-        if (!isPlayerDead)
-        player->move({ 4.f, 0.f });
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::Z) || sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::Space) || sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::Enter))// стрелять
-        if (!isPlayerDead)
+    if (!isPlayerDead) {
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::A) || sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::Left))
+            player->move({ -4.f, 0.f });
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::D) || sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::Right))
+            player->move({ 4.f, 0.f });
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::Z) || sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::Space) || sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::Enter))// стрелять
             spawnPlayerBullet();
+    }
 
     if (player->getPosition().x <= 0.f) {
         player->setPosition({ 0.f, 600.f });
@@ -204,6 +202,9 @@ void GameEngine::render() {
     //объекты
     if (enemies.empty()) {
         this->MainGame->draw(*youWon);
+    }
+    if (isPlayerDead) {
+        this->MainGame->draw(*youLose);
     }
     this->renderEnemies();
     this->MainGame->draw(*player);

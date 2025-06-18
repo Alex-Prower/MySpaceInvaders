@@ -3,16 +3,12 @@
 
 void Enemy::initVars()
 {
-    this->alien = new sf::Sprite(*alienTexture);
-
-    this->alien->setPosition(sf::Vector2f(50.f, 10.f));
-    this->alien->setScale({ 5.f,5.f });
-
-    this->enemyBullet.setSize({ 5.f, 30.f });
-    this->enemyBullet.setFillColor(sf::Color::Red);
-    this->enemyBullet.setPosition({ -100.f, -100.f });
-
-    //игровая логика
+    alien = new sf::Sprite(*alienTexture);
+    alien->setPosition(sf::Vector2f(50.f, 10.f));
+    alien->setScale({ 5.f,5.f });
+    enemyBullet.setSize({ 5.f, 30.f });
+    enemyBullet.setFillColor(sf::Color::Red);
+    enemyBullet.setPosition({ -100.f, -100.f });
     wantToShootRangeStart = 3.f;
     wanttoShootRangeEnd = 10.f;
     shootTime = wantToShootRangeStart + static_cast<float>(rand()) / RAND_MAX * (wanttoShootRangeEnd - wantToShootRangeStart);
@@ -79,8 +75,6 @@ void Enemy::update(sf::RectangleShape& bullet)
     //движения влево-вправо
     float direction = (this->Left0Right1 == 1) ? enemySpeed : -enemySpeed;
     alien->move({ direction, 0.02f });
-
-
     //покадровая анимация
     if (animationClock.getElapsedTime().asSeconds() > 1) {
         if (animationFrame0and1) {

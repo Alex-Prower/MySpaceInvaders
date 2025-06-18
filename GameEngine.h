@@ -23,6 +23,7 @@ private:
 	//Игровые объекты
 	//sf::RectangleShape enemy;
 	sf::Text* youWon;
+	sf::Text* youLose;
 	sf::Texture playerTexture;
 	sf::Texture playerDeadTexture;
 	sf::Texture invaderTexture;
